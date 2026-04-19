@@ -1,0 +1,183 @@
+{% extends "inventory/base.html" %}
+
+{% block title %}Dashboard | ERP Inventory Portal{% endblock %}
+{% block page_title %}Operations Dashboard{% endblock %}
+{% block page_intro %}A live overview of inventory, purchasing, requests, and recent stock activity.{% endblock %}
+
+{% block content %}
+<section class="card-grid four">
+    <article class="stat-card">
+        <span>Products</span>
+        <strong>{{ product_count }}</strong>
+    </article>
+    <article class="stat-card">
+        <span>Suppliers</span>
+        <strong>{{ supplier_count }}</strong>
+    </article>
+    <article class="stat-card">
+        <span>Open Requests</span>
+        <strong>{{ open_requests }}</strong>
+    </article>
+    <article class="stat-card warning">
+        <span>Low Stock Items</span>
+        <strong>{{ low_stock_count }}</strong>
+    </article>
+</section>
+
+<section class="card-grid four">
+    <article class="stat-card">
+        <span>Pending Shortages</span>
+        <strong>{{ pending_shortages }}</strong>
+    </article>
+    <article class="stat-card">
+        <span>Auto Draft POs</span>
+        <strong>{{ auto_draft_pos }}</strong>
+    </article>
+    <article class="stat-card">
+        <span>Auto-Fulfilled Requests</span>
+        <strong>{{ auto_fulfilled_requests }}</strong>
+    </article>
+    <article class="stat-card">
+        <span>Open Requests</span>
+        <strong>{{ open_requests }}</strong>
+    </article>
+</section>
+
+<section class="card-grid two">
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Inventory Snapshot</h3>
+        </div>
+        <div class="table-wrap">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Product</th>
+                    <th>Location</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in inventory_preview %}
+                    <tr>
+                        <td>{{ row.product.sku }}</td>
+                        <td>{{ row.product.name }}</td>
+                        <td>{{ row.product.default_location|default:"-" }}</td>
+                        <td>{{ row.stock_total }}</td>
+                        <td>
+                            {% if row.is_low %}
+                                <span class="pill low">Needs Attention</span>
+                            {% else %}
+                                <span class="pill ok">Healthy</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5">No products available yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </article>
+
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Recent Stock Movements</h3>
+        </div>
+        <div class="table-wrap">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Ref</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movement in recent_movements %}
+                    <tr>
+                        <td>{{ movement.transaction_date }}</td>
+                        <td>{{ movement.reference_number }}</td>
+                        <td>{{ movement.product }}</td>
+                        <td>{{ movement.quantity }}</td>
+                        <td>{{ movement.location }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5">No stock movements posted yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </article>
+</section>
+
+<section class="card-grid two">
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Latest Purchase Orders</h3>
+        </div>
+        <div class="table-wrap">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>PO</th>
+                    <th>Supplier</th>
+                    <th>Product</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_purchase_orders %}
+                    <tr>
+                        <td>{{ order.po_number }}</td>
+                        <td>{{ order.supplier|default:"-" }}</td>
+                        <td>{{ order.product|default:order.specifications|default:"-" }}</td>
+                        <td><span class="pill neutral">{{ order.get_status_display }}</span></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No purchase orders yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </article>
+
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Latest Requests</h3>
+        </div>
+        <div class="table-wrap">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Request</th>
+                    <th>Requested By</th>
+                    <th>Product</th>
+                    <th>Issued</th>
+                    <th>Short</th>
+                    <th>Fulfillment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in recent_requests %}
+                    <tr>
+                        <td>{{ item.request_number }}</td>
+                        <td>{{ item.requested_by }}</td>
+                        <td>{{ item.product|default:"-" }}</td>
+                        <td>{{ item.quantity_issued }}</td>
+                        <td>{{ item.short_quantity }}</td>
+                        <td><span class="pill neutral">{{ item.get_fulfillment_status_display }}</span></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">No requests yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </article>
+</section>
+{% endblock %}

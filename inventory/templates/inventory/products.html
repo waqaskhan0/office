@@ -1,0 +1,62 @@
+{% extends "inventory/base.html" %}
+
+{% block title %}Products | ERP Inventory Portal{% endblock %}
+{% block page_title %}Products and Inventory{% endblock %}
+{% block page_intro %}Add inventory items, define reorder levels, and monitor current stock from the stock ledger.{% endblock %}
+
+{% block content %}
+<section class="card-grid two">
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Add Product</h3>
+        </div>
+        <form method="post" class="portal-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="primary-btn">Save Product</button>
+        </form>
+    </article>
+
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Inventory List</h3>
+        </div>
+        <div class="table-wrap">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Stock</th>
+                    <th>Reorder Level</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.product.sku }}</td>
+                        <td>{{ row.product.name }}</td>
+                        <td>{{ row.product.category|default:"-" }}</td>
+                        <td>{{ row.product.product_type|default:"-" }}</td>
+                        <td>{{ row.product.default_location|default:"-" }}</td>
+                        <td>
+                            {% if row.is_low %}
+                                <span class="pill low">{{ row.stock_total }}</span>
+                            {% else %}
+                                {{ row.stock_total }}
+                            {% endif %}
+                        </td>
+                        <td>{{ row.product.reorder_level }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">No products found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </article>
+</section>
+{% endblock %}

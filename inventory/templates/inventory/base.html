@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP Inventory Portal{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'inventory/style.css' %}">
+</head>
+<body>
+    <div class="portal-shell">
+        <aside class="portal-sidebar">
+            <div class="brand">
+                <div class="brand-mark">IMS</div>
+                <div>
+                    <h1>ERP Portal</h1>
+                    <p>Inventory and procurement control</p>
+                </div>
+            </div>
+            <nav class="portal-nav">
+                <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="{% url 'products' %}" class="{% if request.resolver_match.url_name == 'products' %}active{% endif %}">Products</a>
+                <a href="{% url 'suppliers' %}" class="{% if request.resolver_match.url_name == 'suppliers' %}active{% endif %}">Suppliers</a>
+                <a href="{% url 'purchase_orders' %}" class="{% if request.resolver_match.url_name == 'purchase_orders' %}active{% endif %}">Purchase Orders</a>
+                <a href="{% url 'receipts' %}" class="{% if request.resolver_match.url_name == 'receipts' %}active{% endif %}">Goods Receipts</a>
+                <a href="{% url 'requests' %}" class="{% if request.resolver_match.url_name == 'requests' %}active{% endif %}">Requests</a>
+                <a href="{% url 'issuance' %}" class="{% if request.resolver_match.url_name == 'issuance' %}active{% endif %}">Issuance</a>
+                <a href="{% url 'movements' %}" class="{% if request.resolver_match.url_name == 'movements' %}active{% endif %}">Stock Ledger</a>
+                <a href="{% url 'admin:index' %}">Admin</a>
+            </nav>
+        </aside>
+        <main class="portal-main">
+            <header class="portal-header">
+                <div>
+                    <h2>{% block page_title %}ERP Inventory Portal{% endblock %}</h2>
+                    <p>{% block page_intro %}Manage products, stock, suppliers, requests, and receipts from one place.{% endblock %}</p>
+                </div>
+                <div class="header-actions">
+                    <span class="user-badge">{{ request.user.username }}</span>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="ghost-btn">Logout</button>
+                    </form>
+                </div>
+            </header>
+
+            {% if messages %}
+                <section class="message-stack">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

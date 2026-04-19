@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ERP Inventory Portal</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'inventory/style.css' %}">
+</head>
+<body class="login-body">
+    <section class="login-card">
+        <div class="brand login-brand">
+            <div class="brand-mark">IMS</div>
+            <div>
+                <h1>ERP Inventory Portal</h1>
+                <p>Sign in with your email address to manage products, stock, requests, and procurement.</p>
+            </div>
+        </div>
+        <form method="post" class="portal-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="primary-btn full">Login</button>
+        </form>
+    </section>
+</body>
+</html>

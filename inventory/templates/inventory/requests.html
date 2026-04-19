@@ -1,0 +1,70 @@
+{% extends "inventory/base.html" %}
+
+{% block title %}Requests | ERP Inventory Portal{% endblock %}
+{% block page_title %}Department Requests{% endblock %}
+{% block page_intro %}Submit a request once and let the portal check stock, auto-issue what is available, and create a draft PO for any shortage.{% endblock %}
+
+{% block content %}
+<section class="card-grid two">
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Create Request</h3>
+        </div>
+        <form method="post" class="portal-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="primary-btn">Submit Request</button>
+        </form>
+    </article>
+
+    <article class="portal-card">
+        <div class="card-heading">
+            <h3>Request Register</h3>
+        </div>
+        <div class="table-wrap">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Request</th>
+                    <th>Date</th>
+                    <th>Requested By</th>
+                    <th>Product</th>
+                    <th>Available</th>
+                    <th>Requested</th>
+                    <th>Issued</th>
+                    <th>Short</th>
+                    <th>Fulfillment</th>
+                    <th>PO</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in requests %}
+                    <tr>
+                        <td>{{ item.request_number }}</td>
+                        <td>{{ item.request_date }}</td>
+                        <td>{{ item.requested_by }}</td>
+                        <td>{{ item.product|default:"-" }}</td>
+                        <td>{{ item.available_quantity }}</td>
+                        <td>{{ item.quantity_requested }}</td>
+                        <td>{{ item.quantity_issued }}</td>
+                        <td>{{ item.short_quantity }}</td>
+                        <td><span class="pill neutral">{{ item.get_fulfillment_status_display }}</span></td>
+                        <td>
+                            {% with po=item.purchase_orders.first %}
+                                {% if po %}
+                                    <span>{{ po.po_number }}</span>
+                                {% else %}
+                                    <span class="muted">-</span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="10">No requests available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </article>
+</section>
+{% endblock %}
