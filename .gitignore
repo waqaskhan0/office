@@ -1,11 +1,10 @@
-__pycache__/
-*.py[cod]
-db.sqlite3
-.venv/
-venv/
-env/
-staticfiles/
 .idea/
 .vscode/
+backend/node_modules/
+frontend/node_modules/
+dist/
+build/
+backend/.env
+frontend/.env
 
 

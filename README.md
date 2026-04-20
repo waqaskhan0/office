@@ -1,36 +1,75 @@
-# ERP Inventory Portal
+# IMS ERP Portal
 
-A browser-based inventory management portal built in Python with Django and SQLite. It includes:
+This project now uses:
 
-- Login-protected dashboard
-- Product and supplier management
-- Purchase orders
-- Goods receipts with stock posting
-- Department requests and approvals
-- Issuance with stock deduction
-- Stock ledger and location summary
-- Excel import command for the provided workbook
+- `frontend/`: React + Ant Design
+- `backend/`: Node.js + Express + Sequelize
+- `database`: MySQL
 
-## Run the portal
+## Run the Backend
+
+1. Create a MySQL database, for example `ims_portal`
+2. Copy the backend environment template:
 
 ```powershell
-python -m pip install -r requirements.txt
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
+cd D:\IMS\backend
+copy .env.example .env
 ```
 
-Open `http://127.0.0.1:8000/` and log in with the superuser you created.
-
-## Import your workbook
+3. Update `.env` with your MySQL credentials
+4. Install packages:
 
 ```powershell
-python manage.py import_inventory_workbook --path "C:\Users\mwaqa\Downloads\Inventory Management System.xlsx" --replace
+cd D:\IMS\backend
+npm.cmd install
 ```
+
+5. Start the backend:
+
+```powershell
+npm.cmd run dev
+```
+
+Backend default URL:
+- `http://localhost:4000`
+
+## Run the Frontend
+
+1. Install packages:
+
+```powershell
+cd D:\IMS\frontend
+npm.cmd install
+```
+
+2. Optional: create a frontend environment file:
+
+```env
+VITE_API_URL=http://localhost:4000/api
+```
+
+3. Start the frontend:
+
+```powershell
+cd D:\IMS\frontend
+npm.cmd run dev
+```
+
+Frontend default URL:
+- `http://localhost:5173`
+
+## API Modules
+
+- dashboard
+- products
+- suppliers
+- purchase orders
+- goods receipts
+- requests
+- issuance
+- stock ledger
 
 ## Notes
 
-- The default database is SQLite in `db.sqlite3`.
-- You can change the database later in [settings.py](/d:/IMS/erp_portal/settings.py) to PostgreSQL or MySQL.
-- Historical rows from the workbook are imported where the source data is clear enough to map safely.
+- Use `npm.cmd` in PowerShell if `npm` is blocked by execution policy.
+- `backend/.env` and `frontend/.env` are intentionally ignored.
